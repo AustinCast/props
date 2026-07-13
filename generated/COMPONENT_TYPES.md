@@ -1558,6 +1558,28 @@ export const polygonCutoutProps = pcbLayoutProps
   })
 ```
 
+### differentialpair
+
+```typescript
+/**
+ * Defines matched routing constraints for two named traces that form a
+ * differential pair. Both connections must refer to trace `name` values.
+ */
+export interface DifferentialPairProps {
+  name?: string
+  positiveConnection: string
+  negativeConnection: string
+  maxLengthSkew?: number
+}
+/** Maximum permitted routed-length skew, expressed as a ratio from 0 to 1. */
+export const differentialPairProps = z.object({
+  name: z.string().optional(),
+  positiveConnection: z.string(),
+  negativeConnection: z.string(),
+  maxLengthSkew: z.number().min(0).max(1).optional(),
+})
+```
+
 ### diode
 
 ```typescript

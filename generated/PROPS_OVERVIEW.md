@@ -703,6 +703,17 @@ export interface CustomDrcSelectAll {
 }
 
 
+export interface DifferentialPairProps {
+  name?: string
+  /** Name of the trace or pin carrying the positive signal. */
+  positiveConnection: string
+  /** Name of the trace or pin carrying the negative signal. */
+  negativeConnection: string
+  /** Maximum permitted routed-length skew, expressed as a ratio from 0 to 1. */
+  maxLengthSkew?: number
+}
+
+
 export interface DiodeProps<PinLabel extends string = string>
   extends CommonComponentProps<PinLabel> {
   pinLabels?: DiodePinLabelsProp<PinLabel>
