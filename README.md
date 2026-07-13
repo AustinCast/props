@@ -45,6 +45,7 @@ resistorProps.parse({ resistance: "10k" } as ResistorPropsInput);
 | `<crystal />`                  | [`CrystalProps`](#crystalprops-crystal)                                                    |
 | `<currentsource />`            | [`CurrentSourceProps`](#currentsourceprops-currentsource)                                  |
 | `<cutout />`                   | [`RectCutoutProps`](#rectcutoutprops-cutout)                                               |
+| `<differentialpair />`         | [`DifferentialPairProps`](#differentialpairprops-differentialpair)                         |
 | `<diode />`                    | [`DiodeProps`](#diodeprops-diode)                                                          |
 | `<drccheck />`                 | [`DrcCheckProps`](#drccheckprops-drccheck)                                                 |
 | `<fabricationnotedimension />` | [`FabricationNoteDimensionProps`](#fabricationnotedimensionprops-fabricationnotedimension) |
@@ -607,6 +608,22 @@ export interface RectCutoutProps extends Omit<
 ```
 
 [Source](https://github.com/tscircuit/props/blob/main/lib/components/cutout.ts)
+
+### DifferentialPairProps `<differentialpair />`
+
+```ts
+export interface DifferentialPairProps {
+  name?: string;
+  /** Name of the trace or pin carrying the positive signal. */
+  positiveConnection: string;
+  /** Name of the trace or pin carrying the negative signal. */
+  negativeConnection: string;
+  /** Maximum permitted routed-length skew, expressed as a ratio from 0 to 1. */
+  maxLengthSkew?: number;
+}
+```
+
+[Source](https://github.com/tscircuit/props/blob/main/lib/components/differentialpair.ts)
 
 ### DiodeProps `<diode />`
 
