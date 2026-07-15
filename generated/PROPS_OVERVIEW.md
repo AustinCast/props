@@ -460,6 +460,12 @@ export interface CircleCutoutProps
 }
 
 
+export interface CircleEnclosureCutoutApertureProps extends CircleShapeProps {
+  /** Additional clearance around the nominal opening. */
+  margin?: Distance
+}
+
+
 export interface CircleHoleProps extends PcbLayoutProps {
   name?: string
   shape?: "circle"
@@ -481,6 +487,12 @@ export interface CirclePlatedHoleProps
   portHints?: PortHints
   solderMaskMargin?: Distance
   coveredWithSolderMask?: boolean
+}
+
+
+export interface CircleShapeProps {
+  shape: "circle"
+  radius: Distance
 }
 
 
@@ -1495,6 +1507,12 @@ export interface PcbSxValue {
 }
 
 
+export interface PillEnclosureCutoutApertureProps extends PillShapeProps {
+  /** Additional clearance around the nominal opening. */
+  margin?: Distance
+}
+
+
 export interface PillHoleProps extends PcbLayoutProps {
   name?: string
   shape: "pill"
@@ -1525,6 +1543,13 @@ export interface PillPlatedHoleProps extends Omit<PcbLayoutProps, "layer"> {
   portHints?: PortHints
   solderMaskMargin?: Distance
   coveredWithSolderMask?: boolean
+}
+
+
+export interface PillShapeProps {
+  shape: "pill"
+  width: Distance
+  height: Distance
 }
 
 
@@ -1808,6 +1833,12 @@ export interface RectCutoutProps
 }
 
 
+export interface RectEnclosureCutoutApertureProps extends RectShapeProps {
+  /** Additional clearance around the nominal opening. */
+  margin?: Distance
+}
+
+
 export interface RectHoleProps extends PcbLayoutProps {
   name?: string
   shape: "rect"
@@ -1815,6 +1846,13 @@ export interface RectHoleProps extends PcbLayoutProps {
   height: Distance
   solderMaskMargin?: Distance
   coveredWithSolderMask?: boolean
+}
+
+
+export interface RectShapeProps {
+  shape: "rect"
+  width: Distance
+  height: Distance
 }
 
 
