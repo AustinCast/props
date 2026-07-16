@@ -1227,6 +1227,7 @@ export interface ChipPropsSU<
   noConnect?: readonly PinLabel[] | PinLabel[]
   connections?: Connections<PinLabel>
   spiceModel?: SpiceModelElement
+  internalCircuit?: InternalCircuitElement
 }
 /**
  * Get the connection prop type for a component
@@ -1269,6 +1270,7 @@ export const chipProps = commonComponentProps.extend({
   noConnect: noConnectProp.optional(),
   connections: connectionsProp.optional(),
   spiceModel: spicemodelElement.optional(),
+  internalCircuit: internalCircuitElement.optional(),
 })
 ```
 
@@ -2507,6 +2509,21 @@ export const interconnectProps = commonComponentProps.extend({
   internallyConnectedPins: z
     .array(z.array(z.union([z.string(), z.number()])))
     .optional(),
+})
+```
+
+### internal-circuit
+
+```typescript
+/**
+ * Props for a semantic container that groups the functional components inside
+ * a physical chip package.
+ */
+export interface InternalCircuitProps {
+  children?: ReactNode
+}
+export const internalCircuitProps = z.object({
+  children: z.custom<ReactNode>().optional(),
 })
 ```
 
