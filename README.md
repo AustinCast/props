@@ -293,7 +293,7 @@ export interface BoardProps extends Omit<
   title?: string;
   material?: "fr4" | "fr1" | "flex";
   /** Number of layers for the PCB */
-  layers?: 1 | 2 | 4 | 6 | 8;
+  layers?: 1 | 2 | 4 | 6 | 8 | 10;
   borderRadius?: Distance;
   thickness?: Distance;
   boardAnchorPosition?: Point;
