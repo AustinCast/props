@@ -1007,20 +1007,19 @@ export const autoroutingPhaseProps = z
 ### battery
 
 ```typescript
+/** @deprecated use battery_capacity from circuit-json when circuit-json is updated */
 export interface BatteryProps<PinLabel extends string = string>
   extends CommonComponentProps<PinLabel> {
   capacity?: number | string
   voltage?: number | string
   standard?: "AA" | "AAA" | "9V" | "CR2032" | "18650" | "C"
   schOrientation?: SchematicOrientation
-  connections?: Connections<BatteryPinLabels>
 }
 export const batteryProps = commonComponentProps.extend({
   capacity: capacity.optional(),
   voltage: voltage.optional(),
   standard: z.enum(["AA", "AAA", "9V", "CR2032", "18650", "C"]).optional(),
   schOrientation: schematicOrientation.optional(),
-  connections: createConnectionsProp(batteryPins).optional(),
 })
 ```
 
@@ -4371,4 +4370,3 @@ export const voltageSourceProps = commonComponentProps.extend({
   connections: createConnectionsProp(voltageSourcePinLabels).optional(),
 })
 ```
-

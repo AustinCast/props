@@ -258,7 +258,6 @@ export interface BatteryProps<PinLabel extends string = string>
   voltage?: number | string
   standard?: "AA" | "AAA" | "9V" | "CR2032" | "18650" | "C"
   schOrientation?: SchematicOrientation
-  connections?: Connections<BatteryPinLabels>
 }
 
 
