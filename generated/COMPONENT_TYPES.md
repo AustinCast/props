@@ -1615,12 +1615,12 @@ export interface DifferentialPairProps {
   negativeConnection: string
   maxLengthSkew?: number
 }
-/** Maximum permitted routed-length skew, expressed as a ratio from 0 to 1. */
+/** Maximum permitted routed-length skew in millimeters. */
 export const differentialPairProps = z.object({
   name: z.string().optional(),
   positiveConnection: z.string(),
   negativeConnection: z.string(),
-  maxLengthSkew: z.number().min(0).max(1).optional(),
+  maxLengthSkew: z.number().min(0).finite().optional(),
 })
 ```
 

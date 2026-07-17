@@ -9,7 +9,7 @@ test("parses a differential pair with maximum length skew", () => {
     name: "data",
     positiveConnection: "data-positive",
     negativeConnection: "data-negative",
-    maxLengthSkew: 0.1,
+    maxLengthSkew: 2.5,
   }
 
   const parsed = differentialPairProps.parse(raw)

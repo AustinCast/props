@@ -732,7 +732,7 @@ export interface DifferentialPairProps {
   positiveConnection: string
   /** Name of the trace or pin carrying the negative signal. */
   negativeConnection: string
-  /** Maximum permitted routed-length skew, expressed as a ratio from 0 to 1. */
+  /** Maximum permitted routed-length skew in millimeters. */
   maxLengthSkew?: number
 }
 
