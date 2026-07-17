@@ -258,6 +258,7 @@ export interface BatteryProps<PinLabel extends string = string>
   voltage?: number | string
   standard?: "AA" | "AAA" | "9V" | "CR2032" | "18650" | "C"
   schOrientation?: SchematicOrientation
+  connections?: Connections<BatteryPinLabels>
 }
 
 
@@ -732,7 +733,7 @@ export interface DifferentialPairProps {
   positiveConnection: string
   /** Name of the trace or pin carrying the negative signal. */
   negativeConnection: string
-  /** Maximum permitted routed-length skew, expressed as a ratio from 0 to 1. */
+  /** Maximum permitted routed-length skew in millimeters. */
   maxLengthSkew?: number
 }
 
