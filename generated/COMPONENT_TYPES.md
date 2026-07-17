@@ -4370,3 +4370,4 @@ export const voltageSourceProps = commonComponentProps.extend({
   connections: createConnectionsProp(voltageSourcePinLabels).optional(),
 })
 ```
+
