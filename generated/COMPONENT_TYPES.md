@@ -3719,6 +3719,45 @@ export const schematicSheetProps = z.object({
 })
 ```
 
+### schematic-symbol
+
+```typescript
+/**
+ * Places a named schematic-symbol representation of an existing physical
+ * component. The connection keys are labels exposed by `symbolName`; each
+ * value selects the corresponding port on the component referenced by
+ * `chipRef`.
+ *
+ * This is a schematic-only projection, so it accepts only the identity,
+ * connection, and schematic placement props it needs.
+ */
+export interface SchematicSymbolProps {
+  name: string
+  displayName?: string
+  chipRef?: string
+  symbolName: string
+  connections?: Connections
+  schX?: Distance
+  schY?: Distance
+  schRotation?: number | string
+  schSectionName?: string
+  schSheetName?: string
+}
+/** Maps symbol port labels to physical component port selectors. */
+export const schematicSymbolProps = z.object({
+  name: z.string().min(1),
+  displayName: z.string().optional(),
+  chipRef: z.string().min(1).optional(),
+  symbolName: z.string().min(1),
+  connections: schematicSymbolConnections.optional(),
+  schX: distance.optional(),
+  schY: distance.optional(),
+  schRotation: rotation.optional(),
+  schSectionName: z.string().optional(),
+  schSheetName: z.string().optional(),
+})
+```
+
 ### schematic-table
 
 ```typescript
