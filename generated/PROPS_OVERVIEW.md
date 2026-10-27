@@ -156,6 +156,7 @@ export interface AnalogTransientSimulationProps
   timePerStep?: number | string
   /** Physical pin selectors and per-experiment direction/enable states. Requires spiceEngine="pcb_spice"; rendering only declares the experiment. */
   ibisPinStates?: Record<string, IbisPinRunState>
+  pcbSpiceChannel?: PcbSpiceChannelProps
 }
 
 
@@ -237,6 +238,14 @@ export interface AssemblyDrawingDimensionProps {
   widthOfView?: boolean
   /** Request the selected geometry's height in the view. Conflicts with edgeRef and widthOfView=true. */
   heightOfView?: boolean
+  /** Paired selectors for holes, boards or named model outlines. Both are required; conflicts with edgeRef and true view targets. */
+  fromRef?: string
+  toRef?: string
+  /** Anchor on the reference's projected bounds. Defaults to center; directions are relative to the drawing view, not CAD world axes. */
+  fromAnchor?: AssemblyDrawingDimensionAnchor
+  toAnchor?: AssemblyDrawingDimensionAnchor
+  /** Measure separation on the view's horizontal (x) or vertical (y) axis. Omitted chooses the larger separation, x on ties. Requires paired references. */
+  axis?: "x" | "y"
 }
 
 
@@ -2589,6 +2598,48 @@ export interface PcbRouteCache {
 }
 
 
+export interface PcbSpiceChannelProps {
+  reduction: "routed-copper" | "straightened-stages"
+  sections: number
+  lanes: Array<{ name: string; from: string; to: string }>
+  referencePinRef: string
+  passiveComponentRefs?: string[]
+  extraction: {
+    minimumFrequency: number | string
+    maximumFrequency: number | string
+    modelFrequency: number | string
+    filaments: number
+    refinementFilaments: number
+    convergenceTolerance: number
+    capacitanceTolerance: number
+    reciprocityTolerance: number
+    dcResistanceTolerance: number
+    maxPanelLength: number | string
+    groundMeshSize?: number | string
+  }
+  relativePermittivity?: number
+  via?: {
+    platingThickness?: number | string
+    equivalentWidth?: number | string
+    omitThroughViaStubs?: boolean
+  }
+  straightenedStageProfiles?: Record<
+    string,
+    {
+      spacing: number | string
+      relativePermittivity: number
+      return: {
+        width: number | string
+        thickness: number | string
+        lengthFactor: number
+        centerY: number | string
+        centerZ: number | string
+      }
+    }
+  >
+}
+
+
 export interface PcbStyle {
   silkscreenFontSize?: string | number
   viaPadDiameter?: string | number
@@ -3679,6 +3730,13 @@ export interface ToolingrailProps {
 export interface TransistorProps<PinLabel extends string = string>
   extends CommonComponentProps<PinLabel> {
   type: "npn" | "pnp" | "bjt" | "jfet" | "mosfet" | "igbt"
+  /**
+   * Physical package pins mapped to semantic terminal names (and optional aliases).
+   * For MMBT3904 SOT-23: { pin1: "base", pin2: "emitter", pin3: "collector" }.
+   * Use full terminal names to retain schematic and simulation semantics.
+   * Omit to retain the symbol's default pin order; no package pinout is inferred.
+   */
+  pinLabels?: PinLabelsProp<string, PinLabel>
   connections?: Connections<transistorPinsLabels>
 }
 
