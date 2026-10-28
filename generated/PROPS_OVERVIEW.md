@@ -216,6 +216,11 @@ export interface AssemblyCableProps {
   standard?: AssemblyCableStandard
   /** Explicit cable model specification. Omit to infer the cable from its endpoints. */
   model?: string
+  waypoints?: { x: number; y: number; z: number }[]
+  /** Reference endpoint for waypoint offsets. Required when waypoints is defined. */
+  waypointAnchor?: "start" | "end"
+  /** Board orientation for waypoint axes. Required when waypoints is defined. */
+  waypointAxisOrientation?: "board_at_start" | "board_at_end"
 }
 
 
@@ -612,6 +617,23 @@ export interface AutoroutingPhaseProps extends RoutingTolerances, FanoutProps {
   // Reroutes traces selected by region or connection. The simplify autorouter
   // may omit a selector to simplify every existing trace in the phase.
   reroute?: boolean
+  /**
+   * Select the test-point autorouter. Requires reroute=true; omitted/false leaves
+   * existing routing unchanged. Optional connection(s) select traces, otherwise
+   * all routed traces are selected. Conflicts with region, pcbTracePaths,
+   * autorouter and algorithmFn. No alias for the unreleased pcbTestPoints object.
+   */
+  addTestPoints?: boolean
+  /** Test-point layer; defaults to bottom when addTestPoints is enabled. */
+  testPointLayer?: "top" | "bottom"
+  /** Probe pad diameter, mm or unit string; defaults to 1 mm. Must be positive. */
+  testPointDiameter?: Distance
+  /** Copper edge clearance, mm or unit string; defaults to 0.2 mm. */
+  testPointClearance?: Distance
+  /** Minimum probe center spacing, mm or unit string; defaults to 2.54 mm. */
+  testPointMinProbeSpacing?: Distance
+  /** Maximum local trace detour, mm or unit string; defaults to 1 mm. */
+  testPointMaxDetour?: Distance
 }
 
 
@@ -3681,7 +3703,8 @@ export interface SymbolProps {
    * Source sizing bounds in the local symbol coordinate space (mm, +X right, +Y up).
    * With width/height, maps the bounds center to the symbol position; all artwork
    * and ports use the same transform. Omitted uses automatic bounds including ports.
-   * maxX must exceed minX and maxY must exceed minY. No aliases; no change to existing defaults.
+   * maxX must exceed minX and maxY must exceed minY. Other shapes are rejected
+   * with a diagnostic listing the required bounds. No aliases; existing defaults are unchanged.
    */
   viewbox?: {
     minX: number | string

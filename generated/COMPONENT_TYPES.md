@@ -2023,13 +2023,14 @@ export interface AutoroutingPhaseProps extends RoutingTolerances, FanoutProps {
   // Reroutes traces selected by region or connection. The simplify autorouter
   // may omit a selector to simplify every existing trace in the phase.
   reroute?: boolean
+  addTestPoints?: boolean
+  testPointLayer?: "top" | "bottom"
+  testPointDiameter?: Distance
+  testPointClearance?: Distance
+  testPointMinProbeSpacing?: Distance
+  testPointMaxDetour?: Distance
 }
-/**
-   * Saved PCB wire/via routes using the same format as fanout pcbTracePaths.
-   * Numeric distances are mm; unit strings are normalized to mm. Omitted by
-   * default; an empty array is accepted. No aliases or prop conflicts are
-   * introduced, and existing phases require no migration.
-   */
+/** Maximum local trace detour, mm or unit string; defaults to 1 mm. */
 export const autoroutingPhaseProps = z
   .object({
     key: z.any().optional(),
@@ -2052,9 +2053,51 @@ export const autoroutingPhaseProps = z
     connection: z.string().optional(),
     connections: z.array(z.string()).optional(),
     reroute: z.boolean().optional(),
+    addTestPoints: z.boolean().optional(),
+    testPointLayer: z.enum(["top", "bottom"]).optional(),
+    testPointDiameter: distance.pipe(z.number().finite().positive()).optional(),
+    testPointClearance: distance
+      .pipe(z.number().finite().nonnegative())
+      .optional(),
+    testPointMinProbeSpacing: distance
+      .pipe(z.number().finite().nonnegative())
+      .optional(),
+    testPointMaxDetour: distance
+      .pipe(z.number().finite().nonnegative())
+      .optional(),
     ...fanoutProps.shape,
   })
   .superRefine((value, ctx) => {
+    if (
+      value.addTestPoints &&
+      (value.reroute !== true ||
+        value.region ||
+        value.pcbTracePaths ||
+        value.autorouter ||
+        value.algorithmFn)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["addTestPoints"],
+        message:
+          "addTestPoints requires reroute=true and cannot combine with region, pcbTracePaths, autorouter, or algorithmFn",
+      })
+    }
+    for (const option of [
+      "testPointLayer",
+      "testPointDiameter",
+      "testPointClearance",
+      "testPointMinProbeSpacing",
+      "testPointMaxDetour",
+    ] as const) {
+      if (value[option] !== undefined && !value.addTestPoints) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [option],
+          message: `${option} requires addTestPoints=true`,
+        })
+      }
+    }
     const isSimplifyAutorouter =
       value.autorouter === "simplify" ||
       (typeof value.autorouter === "object" &&
@@ -2068,7 +2111,10 @@ export const autoroutingPhaseProps = z
 
     if (
       value.reroute !== undefined &&
-      !(isSimplifyAutorouter && value.reroute === true) &&
+      !(
+        (isSimplifyAutorouter || value.addTestPoints) &&
+        value.reroute === true
+      ) &&
       value.region === undefined &&
       value.connection === undefined &&
       value.connections === undefined
@@ -6127,7 +6173,8 @@ export interface SymbolProps {
    * Source sizing bounds in the local symbol coordinate space (mm, +X right, +Y up).
    * With width/height, maps the bounds center to the symbol position; all artwork
    * and ports use the same transform. Omitted uses automatic bounds including ports.
-   * maxX must exceed minX and maxY must exceed minY. No aliases; no change to existing defaults.
+   * maxX must exceed minX and maxY must exceed minY. Other shapes are rejected
+   * with a diagnostic listing the required bounds. No aliases; existing defaults are unchanged.
    */
 export const symbolProps = z.object({
   originalFacingDirection: z
@@ -6138,20 +6185,20 @@ export const symbolProps = z.object({
   height: distance.optional(),
   fit: z.enum(["fill", "contain", "stretch"]).optional(),
   viewbox: z
-    .object({
-      minX: distance,
-      maxX: distance,
-      minY: distance,
-      maxY: distance,
-    })
-    .refine((bounds) => bounds.maxX > bounds.minX, {
-      message: "viewbox maxX must exceed minX",
-      path: ["maxX"],
-    })
-    .refine((bounds) => bounds.maxY > bounds.minY, {
-      message: "viewbox maxY must exceed minY",
-      path: ["maxY"],
-    })
+    .custom<z.input<typeof symbolViewboxBounds>>(
+      (bounds) =>
+        typeof bounds === "object" &&
+        bounds !== null &&
+        "minX" in bounds &&
+        "maxX" in bounds &&
+        "minY" in bounds &&
+        "maxY" in bounds,
+      {
+        message:
+          "viewbox requires { minX, maxX, minY, maxY } bounds in the local symbol coordinate space.",
+      },
+    )
+    .pipe(symbolViewboxBounds)
     .optional(),
   name: z.string().optional(),
 })
