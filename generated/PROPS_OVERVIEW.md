@@ -205,7 +205,15 @@ export interface AssemblyBoltProps extends AssemblyFastenerProps {
 }
 
 
-export interface AssemblyCableProps {
+export interface AssemblyBomProps extends SupplierProps {
+  /** Alternative HTTP(S) purchase links, independent of supplier part numbers.
+   * Omitted and empty arrays are accepted. No SKU-to-URL mapping is inferred.
+   */
+  purchaseUrls?: string[]
+}
+
+
+export interface AssemblyCableProps extends AssemblyBomProps {
   /** Stable assembly identity for the cable. */
   name: string
   /** Start connector selector or named assembly reference, e.g. MOTOR.wireside. */
@@ -224,7 +232,7 @@ export interface AssemblyCableProps {
 }
 
 
-export interface AssemblyDeviceProps {
+export interface AssemblyDeviceProps extends AssemblyBomProps {
   /** Product-level assembly identity. */
   name?: string
   /** Imported CAD model URL. Mutually exclusive with cadModel where supported. */
@@ -398,7 +406,9 @@ export interface AssemblyFastenerProps extends AssemblyPartProps {
 }
 
 
-export interface AssemblyMotorProps extends AssemblyFaceMountProps {
+export interface AssemblyMotorProps
+  extends AssemblyFaceMountProps,
+    AssemblyBomProps {
   /** Stable assembly identity used by selectors. */
   name: string
   /** Human-facing alternate to the stable name. */
@@ -428,7 +438,9 @@ export interface AssemblyMountOffset {
 }
 
 
-export interface AssemblyPartProps extends AssemblyFaceMountProps {
+export interface AssemblyPartProps
+  extends AssemblyFaceMountProps,
+    AssemblyBomProps {
   /** Stable identity used by assembly selectors. */
   name: string
   /** Human-facing alternate to the stable name. */
@@ -444,7 +456,9 @@ export interface AssemblyPartProps extends AssemblyFaceMountProps {
 }
 
 
-export interface AssemblyPrintedPartProps extends AssemblyFaceMountProps {
+export interface AssemblyPrintedPartProps
+  extends AssemblyFaceMountProps,
+    AssemblyBomProps {
   /** Stable identity used by assembly mounting selectors. */
   name: string
   displayName?: string
@@ -489,7 +503,7 @@ export interface AssemblyReferenceSurfaceProps {
 }
 
 
-export interface AssemblyScreenProps {
+export interface AssemblyScreenProps extends AssemblyBomProps {
   /** Stable product-level identity for the screen assembly. */
   name: string
   /** Imported CAD model URL. Mutually exclusive with cadModel where supported. */
@@ -516,7 +530,9 @@ export interface AssemblyScreenProps {
 }
 
 
-export interface AssemblySubassemblyProps extends AssemblyFaceMountProps {
+export interface AssemblySubassemblyProps
+  extends AssemblyFaceMountProps,
+    AssemblyBomProps {
   /** Stable identity used by selectors from other assembly elements. */
   name: string
   /** Imported CAD model URL. Mutually exclusive with cadModel where supported. */
@@ -3721,6 +3737,73 @@ export interface SymbolProps {
     maxY: number | string
   }
   name?: string
+}
+
+
+export interface SystemBlockComponentProps
+  extends SystemBlockPcbReferenceProps {
+  /** Stable block identity, unique across its page; trimmed and nonempty. */
+  name: string
+  /** Human-facing title; consumers fall back to name when omitted. */
+  displayName?: string
+  /** Plain-text explanation of what the block does. */
+  description?: string
+}
+
+
+export interface SystemBlockConnectionProps {
+  /** Optional stable connection identity, unique within its page when supplied. */
+  name?: string
+  /** Component name within the containing page, including inside nested groups. */
+  from: string
+  /** Component name within the same page; group names and pin selectors are not endpoints. */
+  to: string
+  /** Interface annotation such as I2C, SPI, or 3.3 V; not the connection's identity. */
+  label?: string
+  /** Relationship category; defaults to signal. */
+  kind?: "signal" | "power"
+  /** Arrowheads: from → to, both ends, or neither. Defaults to forward. */
+  direction?: "forward" | "both" | "none"
+}
+
+
+export interface SystemBlockGroupProps extends SystemBlockPcbReferenceProps {
+  /** Stable group identity, unique across its page; trimmed and nonempty. */
+  name: string
+  /** Human-facing title; consumers fall back to name when omitted. */
+  displayName?: string
+  /** Plain-text explanation of the subsystem's responsibility. */
+  description?: string
+  /** Preserved unchanged; grouping does not create electrical connectivity. */
+  children?: ReactNode
+}
+
+
+export interface SystemBlockPageProps {
+  /** Stable page identity, unique within the circuit; trimmed and nonempty. */
+  name: string
+  /** Human-facing title; consumers fall back to name when omitted. */
+  displayName?: string
+  /** Plain-text explanation of the system's purpose. */
+  description?: string
+  /** Preferred automatic layout direction; defaults to right. */
+  direction?: "right" | "left" | "down" | "up"
+  /** System blocks, nested groups, and connections; preserved unchanged. */
+  children?: ReactNode
+}
+
+
+export interface SystemBlockPcbReferenceProps {
+  /** One PCB component name; mutually exclusive with pcbComponentNames. */
+  pcbComponentName?: string
+  /** Nonempty list of PCB component names; mutually exclusive with pcbComponentName. */
+  pcbComponentNames?: string[]
+  /**
+   * Named PCB subcircuit in which component names are resolved. Without component
+   * names, associates the entire subcircuit. Omitted uses the owning circuit scope.
+   * References are names, not selectors; resolution is performed by the consumer.
+   */
+  pcbSubcircuitName?: string
 }
 
 
