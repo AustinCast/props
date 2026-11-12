@@ -2418,13 +2418,13 @@ export interface PanelProps
    * both `vScore` and `mouseBites` to true is an error.
    */
   vScore?: boolean
-  /** Minimum finished panel width, including edge padding. Validation only; does not resize the panel. No default. */
+  /** Minimum finished panel width, including edge padding. An auto-sized panel grows to it. No default. */
   minWidth?: Distance
-  /** Maximum finished panel width, including edge padding. Validation only; does not resize the panel. No default. */
+  /** Maximum finished panel width, including edge padding. An automatic grid picks rows and columns to fit it. No default. */
   maxWidth?: Distance
-  /** Minimum finished panel height, including edge padding. Validation only; does not resize the panel. No default. */
+  /** Minimum finished panel height, including edge padding. An auto-sized panel grows to it. No default. */
   minHeight?: Distance
-  /** Maximum finished panel height, including edge padding. Validation only; does not resize the panel. No default. */
+  /** Maximum finished panel height, including edge padding. An automatic grid picks rows and columns to fit it. No default. */
   maxHeight?: Distance
   /** Positive number of evenly spaced tabs per rectangular board edge. Conflicts with <paneltab> children. Omit to preserve automatic tabs. */
   tabCountPerEdge?: number
@@ -2451,9 +2451,22 @@ export interface PanelTabKeepoutProps {
 export interface PanelTabProps {
   /** Stable board name. Omit to apply this tab to every board in the containing panel. */
   boardName?: string
+  /** Board edge the tab bridges to the panel. */
   boardEdge: PanelTabEdge
-  /** Tab centre measured along a board edge in mm (or a unit string): left to right on horizontal edges, bottom to top on vertical edges. */
-  offset: Distance
+  /** Left or right edge tab: distance from the board's top edge to the tab centre. */
+  centerOffsetFromBoardTopEdge?: Distance
+  /** Left or right edge tab: distance from the board's bottom edge to the tab centre. */
+  centerOffsetFromBoardBottomEdge?: Distance
+  /** Top or bottom edge tab: distance from the board's left edge to the tab centre. */
+  centerOffsetFromBoardLeftEdge?: Distance
+  /** Top or bottom edge tab: distance from the board's right edge to the tab centre. */
+  centerOffsetFromBoardRightEdge?: Distance
+  /**
+   * Width of this tab along the board edge. Defaults to the panel's
+   * `tabLength`, the tab span along the edge; the panel's `tabWidth` is the
+   * routed slot width.
+   */
+  tabWidth?: Distance
 }
 
 
