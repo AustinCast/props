@@ -729,6 +729,7 @@ export interface AutorouterConfig {
   serverMode?: "job" | "solve-endpoint"
   serverCacheEnabled?: boolean
   cache?: PcbRouteCache
+  /** @deprecated Set minTraceToPadEdgeClearance on <board> or <autoroutingphase> instead. */
   traceClearance?: Distance
   availableJumperTypes?: Array<"1206x4" | "0603">
   allowViaInPad?: boolean
@@ -3069,6 +3070,12 @@ export interface PillSmtPadProps extends Omit<PcbLayoutProps, "pcbRotation"> {
   // Omitted or false preserves default paste behavior; true overrides solderPasteMargin.
   noSolderPaste?: boolean
   solderPasteMargin?: Distance
+}
+
+
+export interface PillSolderPasteProps extends PcbLayoutProps, PillShapeProps {
+  /** Explicit corner radius; a capsule uses half the smaller dimension. */
+  radius: Distance
 }
 
 
