@@ -754,6 +754,7 @@ export interface AutorouterConfig {
     | "auto_local"
     | "auto_cloud"
     | "auto_jumper"
+    | "tscircuit"
     | "tscircuit_beta"
     | "krt"
     | "freerouting"
@@ -3929,6 +3930,8 @@ export interface StampboardProps extends BoardProps {
 export interface SubcircuitGroupProps
   extends BaseGroupProps,
     RoutingTolerances {
+  /** Default unit for bare schX and schY coordinates. Subcircuits inherit it when omitted. Boards default to the legacy sheet scale (10.16 mm per 1.1 units). In mm or in mode, a coordinate with an explicit unit uses its own unit. */
+  defaultSchematicLengthUnit?: SchematicLengthUnit
   manualEdits?: ManualEditsFileInput
   routingDisabled?: boolean
   /**
